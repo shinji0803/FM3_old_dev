@@ -4,7 +4,7 @@
 
 #include "mcu.h"
 
-//#define USE_PPM
+#define USE_PPM
 
 #define PWM_FREQ 100.f
 #define INTERRUPT_FREQ 2250000.f
@@ -45,6 +45,9 @@ void rc_write(uint8_t ch, uint16_t pulse_usec);
 
 //指定ChのPWM入力パルス幅取得(ch = 1~8)
 uint16_t rc_read(uint8_t ch);
+
+//8ch分の入力パルス幅取得
+void rc_multiread(uint16_t *data);
 
 //指定ChのPWM出力パルス幅取得(ch = 1~8)
 uint16_t rcout_read(uint8_t ch);

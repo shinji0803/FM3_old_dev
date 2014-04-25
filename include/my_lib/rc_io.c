@@ -135,15 +135,22 @@ uint16_t rcout_read(uint8_t ch){
 	return (uint16_t)((pwm_period - rc_out[ch -1]) / (INTERRUPT_FREQ / 1000000.f));
 }
 
+void rc_multiread(uint16_t *data){
+	uint8_t i = 0;
+	for(i = 0; i < 8; i++) data[i] = rc_read(i + 1);
+}
+
 void BT0_7_IRQHandler(void){
 	static uint16_t pulse = 0;
-
+#ifdef USE_PPM
+	static uint8_t invalid = 0;
+	static int8_t count = 0;
+#endif
+	
 	if(FM3_BT0_PWC->STC_f.EDIR == 1){
 		pulse = FM3_BT0_PWC->DTBF;
 
 #ifdef USE_PPM
-		static uint8_t invalid = 0;
-		static int8_t count = 0;
 		//–³Œø‹æŠÔ‚Íƒpƒ‹ƒX•‚ª10msec‚­‚ç‚¢
 		//5msecˆÈã‚Å–³Œø•‚Æ”»’f
 		if(pulse > 0x2BF2){
