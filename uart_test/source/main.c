@@ -15,6 +15,7 @@ void loop_20hz(void);
 void loop_100hz(void);
 void loop_200hz(void);
 
+static void load_param(void);
 static void top_menu(void);
 static void gain_menu(void);
 static void print_data(uint8_t data_type);
@@ -37,6 +38,10 @@ uint8_t input;
 #define  EXIT							'e'
 
 float p_gain = 0.0f, i_gain = 0.0f, d_gain = 0.0f;
+//gain address on fram
+#define P_ADD 0
+#define I_ADD 4
+#define D_ADD 8
 
 int32_t main(void){
 	
@@ -60,6 +65,8 @@ int32_t main(void){
 	Init_fram();
 	Init_DT();
 	
+	load_param();	
+	
 	top_menu();
 	
 	while(1){
@@ -77,6 +84,14 @@ int32_t main(void){
 			if(input != '\r' && input != '\n') gain_menu_branch(input);	
 		}
 	}
+}
+
+static void load_param(){
+	//Load parameter
+	p_gain = read_float(P_ADD);
+	i_gain = read_float(I_ADD);
+	d_gain = read_float(D_ADD);
+	uart0_printf("Parameters Load Complete\r\n");
 }
 
 static void top_menu(){
@@ -153,6 +168,9 @@ static void gain_menu_branch(uint8_t com_type){
 			break;
 		
 		case SAVE:
+			write_float(P_ADD, p_gain);
+			write_float(I_ADD, i_gain);
+			write_float(D_ADD, d_gain);
 			uart0_printf("Saved!\r\n");
 			break;
 		
