@@ -29,6 +29,7 @@ uint8_t input;
 #define	FLOW						'f'
 #define	RADIO_FLOW	'w'
 #define	SET_GAIN 			'g'
+#define	DISPLAY				'a'
 #define	SET_P						'p'
 #define	SET_I						'i'
 #define	SET_D						'd'
@@ -39,9 +40,7 @@ float p_gain = 0.0f, i_gain = 0.0f, d_gain = 0.0f;
 
 int32_t main(void){
 	
-	
-	
-	//初期化開始
+	//initialize
 	Init_timer();
 	Init_uart();
 	InitLED();
@@ -60,7 +59,6 @@ int32_t main(void){
 	Init_i2c();
 	Init_fram();
 	Init_DT();
-	//初期化終了
 	
 	top_menu();
 	
@@ -70,36 +68,37 @@ int32_t main(void){
 				input_detect = 0;
 				top_menu();
 			}
-			else	print_data(input);
+			else if(input != '\r')	print_data(input);
 		}	
 		
 		if(input_detect == 1 && menu_flg == 1){
 			input_detect = 0;
-			gain_menu();
-			gain_menu_branch(input);	
+			if(input == '\n') gain_menu();
+			if(input != '\r' && input != '\n') gain_menu_branch(input);	
 		}
 	}
 }
 
 static void top_menu(){
-	uart0_printf("------------------------\r\n");
-	uart0_printf("- Test Console ver1.0 -\r\n");
-	uart0_printf("------------------------\r\n");
+	uart0_printf("---------------------------\r\n");
+	uart0_printf("-- Test Console ver1.1 ---\r\n");
+	uart0_printf("---------------------------\r\n");
 	uart0_printf("r: read radio\r\n");
 	uart0_printf("f: read flow\r\n");
 	uart0_printf("w: read radio and flow\r\n");
 	uart0_printf("g: set gain\r\n");
-	uart0_printf("------------------------\r\n");
+	uart0_printf("---------------------------\r\n");
 }	
 
 static void gain_menu(){
 	uart0_printf("-----Gain Setting Menu-----\r\n");
+	uart0_printf("a: display all gain\r\n");
 	uart0_printf("p: set p_gain\r\n");
 	uart0_printf("i: set i_gain\r\n");
 	uart0_printf("d: set d_gain\r\n");
 	uart0_printf("s: save all gain setting\r\n");
 	uart0_printf("e: return top menu\r\n");
-	uart0_printf("-------------------------\r\n");
+	uart0_printf("---------------------------\r\n");
 }
 
 static void print_data(uint8_t com_type){
@@ -118,8 +117,8 @@ static void print_data(uint8_t com_type){
 			  break;
 			
 			case SET_GAIN:
-				//uart0_printf("set gain\r\n");
 				menu_flg = 1;
+				gain_menu();
 			  break;
 			
 			default:
@@ -134,6 +133,10 @@ static void print_data(uint8_t com_type){
 static void gain_menu_branch(uint8_t com_type){
 	
 	switch(com_type){
+		case DISPLAY:
+			uart0_printf("P: %f, I: %f, D: %f\r\n", p_gain, i_gain, d_gain);
+			break;
+		
 		case SET_P:
 			uart0_printf("P Gain is %f, input new value.\r\n", p_gain);
 			p_gain = uart0_get_float_input();
@@ -184,7 +187,7 @@ void loop_20hz(){
 }
 
 void loop_100hz(){
-	//入力検出
+	//detect user input
 	int32_t size;
 	uint8_t rx_buf[8];
 	
