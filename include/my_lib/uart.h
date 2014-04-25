@@ -32,4 +32,7 @@ void Init_uart(void);
 //UART0‚Éprintfo—Í
 void uart0_printf(const char* format, ...);
 
+//¬”“ü—Í‚ğæ“¾ ˆ—‚Í~‚Ü‚é
+float uart0_get_float_input(void);
+
 #endif

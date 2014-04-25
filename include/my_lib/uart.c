@@ -113,5 +113,30 @@ void uart0_printf(const char* format, ...){
 }
 //sprintf,vsprintfはサイズがでかいとかなんとか　要改善
 
-
-
+float uart0_get_float_input(){
+	int32_t size;
+	uint8_t rx_buf[8];
+	uint8_t rx_value[32];
+	uint8_t i = 0;
+	float input;
+	
+	for(i = 0; i < 8; i ++) rx_buf[i] = '\0';
+	for(i = 0; i < 32; i ++) rx_value[i] = '\0';
+	i = 0;
+	while(1){
+		size = 1;
+		uart0->BufRx(rx_buf, &size, UartDev_FLAG_NONBLOCKING);
+		
+		if(size >= 1){
+			uart0_printf("%c", rx_buf[0]);
+			rx_value[i] = rx_buf[0];
+			i ++;
+		}
+		
+		if(rx_buf[0] == '\n') break;
+	}
+	
+	input = atof((const char*)rx_value);
+	return input;
+}
+	
