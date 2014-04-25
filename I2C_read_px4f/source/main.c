@@ -41,7 +41,7 @@ int32_t main(void){
 	int32_t size;
 	uint8_t data_rx[64];
 	uint8_t data_tx = 0x00;
-	
+	uint32_t start, end;
 	//‰Šú‰»ŠJŽn
 	Init_timer();
 	Init_uart();
@@ -67,20 +67,26 @@ int32_t main(void){
 	i2c->Cfg.SlaveAddr = 0x42; 
 	i2c->Cfg.BaudRate = 400000;
 	//
-
+	
+	
 	while (1) {
+		start = get_micros();
 		size = 1;
 		i2c->DataTx(&data_tx, &size);
 		size= 22;
 		i2c->DataRx(data_rx, &size);
+		calc_flow_i2c(data_rx);
+		end = get_micros();
 		
 		if(p_flg == 1){
 			
-			calc_flow_i2c(data_rx);
+			//calc_flow_i2c(data_rx);
 			
+			uart0_printf("%d\r\n", (end - start));
+			/*
 			uart0_printf("%5d, %5d, %5d, %3d, ", frame_count, flow_comp_m_x, flow_comp_m_y, qual);
 			uart0_printf("%5d, %5d, %5d, %5d\r\n", gyro_x_rate, gyro_y_rate, gyro_z_rate, ground_distance);
-			
+			*/
 			/*
 			for(i = 0; i < 22; i++){
 				uart0_printf("%2x, ", data_rx[i]);
