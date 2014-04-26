@@ -54,8 +54,6 @@ int32_t main(void){
 	Init_rcout_port();
 	
 	Init_rcin(IN1);
-	Init_rcin(IN2);
-	Init_rcin(IN3);
 	
 	Init_rcout(OUT1);
 	Init_rcout(OUT2);
