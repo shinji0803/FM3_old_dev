@@ -16,6 +16,7 @@ void loop_20hz(void);
 void loop_100hz(void);
 void loop_200hz(void);
 
+static void read_radio(void);
 static void load_param(void);
 static void top_menu(void);
 static void gain_menu(void);
@@ -25,6 +26,9 @@ static void gain_menu_branch(uint8_t com_type);
 uint8_t p_flg = 0, menu_flg = 0, flow_update = 0;
 uint8_t input_detect = 0;
 uint8_t input;
+
+uint16_t rc_input_trim[2] = { 0, 0};
+uint16_t rc_input[2] = { 0, 0};
 
 //Command type
 #define	RADIO						'r'
@@ -57,6 +61,8 @@ int32_t main(void){
 	Init_rcout_port();
 	
 	Init_rcin(IN1);
+	Init_rcin(IN2);
+	Init_rcin(IN3);
 	
 	Init_rcout(OUT1);
 	Init_rcout(OUT2);
@@ -66,8 +72,7 @@ int32_t main(void){
 	Init_fram();
 	Init_DT();
 	
-	px4f_init();
-	px4f = get_flow_data();
+	px4f = px4f_init();
 	
 	load_param();	
 	
@@ -75,6 +80,7 @@ int32_t main(void){
 	
 	while(1){
 		if(flow_update == 1){
+			read_radio();
 			px4f_update();
 			flow_update = 0;
 		}
@@ -105,6 +111,15 @@ static void load_param(){
 	uart0_printf("Parameters Load Complete\r\n");
 }
 
+static void read_radio(){
+	uint8_t ch = 0;
+	for(ch = 0; ch < 2; ch++){
+		rc_input[ch] = rc_read( ch + 1);
+		//through output
+		rc_write( ch + 1, rc_input[ch]);
+	}
+}
+
 static void top_menu(){
 	uart0_printf("---------------------------\r\n");
 	uart0_printf("-- Test Console ver1.1 ---\r\n");
@@ -131,7 +146,7 @@ static void print_data(uint8_t com_type){
 	if(p_flg == 1){
 		switch(com_type){
 			case RADIO:
-				uart0_printf("radio output\r\n");
+				uart0_printf("IN: %d, %d OUT: %d, %d\r\n", rc_input[0], rc_input[1], rcout_read(1), rcout_read(2));
 				break;
 			
 			case FLOW:
@@ -234,7 +249,6 @@ void loop_100hz(){
 		input = rx_buf[0];
 	}
 	//
-	
 	flow_update = 1;
 }
 

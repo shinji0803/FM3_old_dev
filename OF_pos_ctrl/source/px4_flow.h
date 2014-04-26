@@ -26,12 +26,12 @@ typedef struct{
 	int16_t ground_distance;// Ground distance in meters*1000. Positive value: distance known. Negative value: Unknown distance
 } flow_data;
 
-void px4f_init(void);
+
+flow_data *px4f_init(void);
 
 void px4f_update(void);
 
 void calc_flow(void);
 
-flow_data *get_flow_data(void);
 
 #endif

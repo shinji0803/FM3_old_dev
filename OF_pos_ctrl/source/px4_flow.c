@@ -2,15 +2,15 @@
 #include "px4_flow.h"
 
 static uint8_t data[64];
+static flow_data flow;
 
-flow_data flow;
-
-void px4f_init(){
+flow_data *px4f_init(){
 			
 	//PX4 Flow
 	i2c->Cfg.SlaveAddr = PX4F_ADD; 
 	i2c->Cfg.BaudRate = PX4F_BAUD;
 	
+	return &flow;
 }
 
 void px4f_update(){
@@ -53,8 +53,4 @@ void calc_flow(){
 	r.b[0] = data[20];
 	r.b[1] = data[21];
 	flow.ground_distance = (int16_t)r.i;
-}
-
-flow_data *get_flow_data(){
-	return &flow;
 }
