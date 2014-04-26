@@ -34,7 +34,7 @@ void SysTick_Handler(void){
 }
 
 void DT_Handler(void){	//DT割込みハンドラ: 0.001sec毎
-	static uint16_t counter_1hz = 0, counter_20hz = 0, counter_100hz = 0, counter_200hz = 0;
+	static uint16_t counter_1hz = 0, counter_20hz = 0, counter_50hz = 0, counter_100hz = 0, counter_200hz = 0;
 	
 	FM3_DTIM->TIMER1INTCLR = 0x01; //なんでもいいから書き込むと割込みクリア？
 	
@@ -46,6 +46,11 @@ void DT_Handler(void){	//DT割込みハンドラ: 0.001sec毎
 	if(counter_20hz >= 50){	//20Hz : 表示周期
 		loop_20hz();
 		counter_20hz = 0;
+	}
+	
+	if(counter_50hz >= 20){	//50Hz
+		loop_50hz();
+		counter_50hz = 0;
 	}
 	
 	if(counter_100hz >= 10){	//100Hz

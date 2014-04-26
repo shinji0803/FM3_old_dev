@@ -20,6 +20,7 @@ void Init_DT(void);
 //デュアルタイマハンドラ内で実行する関数
 extern void loop_1hz(void);
 extern void loop_20hz(void);
+extern void loop_50hz(void);
 extern void loop_100hz(void);
 extern void loop_200hz(void);
 
