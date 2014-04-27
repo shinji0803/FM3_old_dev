@@ -73,7 +73,7 @@ int32_t main(void){
 				else if(input != '\r')	top_menu_branch(input);
 			}	
 			
-			if(menu_flg == 1){
+			else if(menu_flg == 1){
 				input_detect = 0;
 				if(input == '\n') gain_menu();
 				if(input != '\r' && input != '\n') gain_menu_branch(input);	

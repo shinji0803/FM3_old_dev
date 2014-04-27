@@ -51,6 +51,7 @@ void top_menu_branch(uint8_t com_type){
 			  break;
 			
 			case SET_GAIN:
+				input_detect = 0;
 				menu_flg = 1;
 				gain_menu();
 			  break;
