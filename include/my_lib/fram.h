@@ -10,23 +10,7 @@
 #include "clock_def.h"
 
 #include "uart.h"
-
-typedef union __generic_16bit{
-	uint8_t b[2];
-	int16_t i;
-} generic_16bit;
-
-typedef union __generic_32bit{
-	uint8_t b[4];
-	float f;
-	int32_t i;
-} generic_32bit;
-
-typedef union __generic_64bit{
-	uint8_t b[8];
-	int64_t ll;
-} generic_64bit;
-
+#include "param.h"
 
 extern I2cDev_IOB I2cDev[];
 extern I2cDev_IOB *fram;

@@ -1,10 +1,13 @@
 
+#ifndef RC_IO_H
+#define RC_IO_H
+
 //RC入出力関数
 //PWMを読む，PWMを出力する etc...
 
 #include "mcu.h"
 
-#define USE_PPM
+//#define USE_PPM
 
 #define PWM_FREQ 100.f
 #define INTERRUPT_FREQ 2250000.f
@@ -51,3 +54,5 @@ void rc_multiread(uint16_t *data);
 
 //指定ChのPWM出力パルス幅取得(ch = 1~8)
 uint16_t rcout_read(uint8_t ch);
+
+#endif

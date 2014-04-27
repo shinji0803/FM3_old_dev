@@ -2,15 +2,15 @@
 #include "px4_flow.h"
 
 static uint8_t data[64];
-static flow_data flow;
+static flow_data *flow;
 
-flow_data *px4f_init(){
+void px4f_init(flow_data *f){
 			
 	//PX4 Flow
 	i2c->Cfg.SlaveAddr = PX4F_ADD; 
 	i2c->Cfg.BaudRate = PX4F_BAUD;
 	
-	return &flow;
+	flow = f;
 }
 
 void px4f_update(){
@@ -28,29 +28,29 @@ void calc_flow(){
 	
 	r.b[0] = data[0];
 	r.b[1] = data[1];
-	flow.frame_count = (uint16_t)r.i;
+	flow->frame_count = (uint16_t)r.i;
 
 	r.b[0] = data[6];
 	r.b[1] = data[7];
-	flow.flow_comp_m_x = (int16_t)r.i;
+	flow->flow_comp_m_x = (int16_t)r.i;
 	r.b[0] = data[8];
 	r.b[1] = data[9];
-	flow.flow_comp_m_y = (int16_t)r.i;
+	flow->flow_comp_m_y = (int16_t)r.i;
 	r.b[0] = data[10];
 	r.b[1] = data[11];
-	flow.qual =(int16_t)r.i;
+	flow->qual =(int16_t)r.i;
 	
 	r.b[0] = data[12];
 	r.b[1] = data[13];
-	flow.gyro_x_rate = (int16_t)r.i;
+	flow->gyro_x_rate = (int16_t)r.i;
 	r.b[0] = data[14];
 	r.b[1] = data[15];
-	flow.gyro_y_rate = (int16_t)r.i;
+	flow->gyro_y_rate = (int16_t)r.i;
 	r.b[0] = data[16];
 	r.b[1] = data[17];
-	flow.gyro_z_rate = (int16_t)r.i;
+	flow->gyro_z_rate = (int16_t)r.i;
 	
 	r.b[0] = data[20];
 	r.b[1] = data[21];
-	flow.ground_distance = (int16_t)r.i;
+	flow->ground_distance = (int16_t)r.i;
 }
