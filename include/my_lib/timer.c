@@ -66,6 +66,7 @@ void DT_Handler(void){	//DTŠ„ž‚Ýƒnƒ“ƒhƒ‰: 0.001sec–ˆ
 	FM3_DTIM->TIMER1LOAD = 0x000008CA;
 	counter_1hz ++;
 	counter_20hz ++;
+	counter_50hz ++;
 	counter_100hz ++;
 	counter_200hz ++;
 }
