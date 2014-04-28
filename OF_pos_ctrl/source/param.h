@@ -50,6 +50,9 @@ typedef struct{
 	uint8_t gyro_range; // gyro range
 	uint8_t sonar_timestamp;// timestep in milliseconds between I2C frames
 	int16_t ground_distance;// Ground distance in meters*1000. Positive value: distance known. Negative value: Unknown distance
+	
+	float x;
+	float y;
 } flow_data;
 
 

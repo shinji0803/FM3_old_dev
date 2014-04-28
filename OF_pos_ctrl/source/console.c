@@ -41,13 +41,16 @@ void top_menu_branch(uint8_t com_type){
 				break;
 			
 			case FLOW:
-				calc_flow();
+				
 				uart0_printf("%5d, %5d, %5d, %3d, ", c_flow->frame_count, c_flow->flow_comp_m_x, c_flow->flow_comp_m_y, c_flow->qual);
-				uart0_printf("%5d, %5d, %5d, %5d\r\n", c_flow->gyro_x_rate, c_flow->gyro_y_rate, c_flow->gyro_z_rate, c_flow->ground_distance);
+				uart0_printf("%5d\r\n", c_flow->ground_distance);
+				//uart0_printf("%5d, %5d, %5d, %5d\r\n", c_flow->gyro_x_rate, c_flow->gyro_y_rate, c_flow->gyro_z_rate, c_flow->ground_distance);
 			  break;
 			
 			case RADIO_FLOW:
-				uart0_printf("radio and flow output\r\n");
+				uart0_printf("IN: %d, %d OUT: %d, %d ", c_radio->input[0], c_radio->input[1], c_radio->output[0], c_radio->output[1]);
+				
+				uart0_printf("Flow: %+.4f, %+.4f, %3d, %4d\r\n", c_flow->x, c_flow->y, c_flow->qual, c_flow->ground_distance);
 			  break;
 			
 			case SET_GAIN:

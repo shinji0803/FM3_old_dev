@@ -15,11 +15,13 @@
 static void InitLED(void);
 void loop_1hz(void);
 void loop_20hz(void);
+void loop_50hz(void);
 void loop_100hz(void);
 void loop_200hz(void);
 
 static void read_radio(radio *r);
 static void load_param(gain *g);
+static void reset_dist(radio *r, flow_data *f);
 
 uint8_t p_flg = 0, menu_flg = 0, flow_update = 0;
 uint8_t input_detect = 0;
@@ -61,6 +63,7 @@ int32_t main(void){
 		if(flow_update == 1){
 			read_radio(&rc);
 			px4f_update();
+			reset_dist(&rc, &px4f);
 			flow_update = 0;
 		}
 		
@@ -100,8 +103,23 @@ static void read_radio(radio *r){
 		r->output[ch] = rcout_read( ch + 1);
 	}
 }
-	
 
+#define RADIO_TRIM 1520
+#define DZ 5
+#define QUAL_TH 100
+static void reset_dist(radio *r, flow_data *f){
+	uint8_t count = 0;
+	if( r->input[0] > (RADIO_TRIM + DZ)) count ++;
+	if( r->input[0] < (RADIO_TRIM - DZ)) count ++;
+	if( r->input[1] > (RADIO_TRIM + DZ)) count ++;
+	if( r->input[1] < (RADIO_TRIM - DZ)) count ++;
+
+	if( count > 0 || f->qual < QUAL_TH){
+		f->x = 0.0f;
+		f->y = 0.0f;
+	}
+}
+	
 static void InitLED()	//for Heartbeat
 {
 	FM3_GPIO->PFRF_f.P3 = 0; 
@@ -119,6 +137,7 @@ void loop_20hz(){
 }
 
 void loop_50hz(){
+	calc_flow();
 	
 }
 
