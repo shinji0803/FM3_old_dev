@@ -80,10 +80,19 @@ uint32_t get_millis(){
 	return (uint32_t)(usec / 1000);
 }
 
-void wait(uint32_t length){
+void wait_usec(uint32_t length){
 	uint32_t now = usec;
 	while(usec <= (now + length));	
 	
 	return;
 }
 
+void wait(uint32_t length){
+	uint32_t a = 0;
+	uint32_t now = get_millis();
+	while(get_millis() <= (now + length)){
+		a++;
+	}
+	
+	return;
+}

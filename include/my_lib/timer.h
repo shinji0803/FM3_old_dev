@@ -12,6 +12,8 @@ uint32_t get_micros(void);
 uint32_t get_millis(void);
 
 //Wait関数（引数usec）
+void wait_usec(uint32_t length);
+
 void wait(uint32_t length);
 
 //デュアルタイマの設定
