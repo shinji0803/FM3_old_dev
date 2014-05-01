@@ -1,61 +1,97 @@
 
 #include "rc_io.h"
 
+static FM3_BT_PWC_TypeDef *rcin_list[] = { IN1, IN2, IN3, IN4, IN5, IN6, IN7, IN8};
+static FM3_BT_PWM_TypeDef *rcout_list[] = { OUT1, OUT2, OUT3, OUT4, OUT5, OUT6, OUT7, OUT8};
+
 static uint16_t rc_in[8] = { 0, 0, 0, 0, 0, 0, 0, 0};
 static uint16_t rc_out[8] = { 0x4AB5, 0x4AB5, 0x4AB5, 0x4AB5, 0x4AB5, 0x4AB5, 0x4AB5, 0x4AB5};
 
+static void Init_rcin_port(uint8_t ch);
+static void Init_rcout_port(uint8_t ch);
+	
 static uint16_t pwm_period = (uint16_t)(INTERRUPT_FREQ / PWM_FREQ);
 
 
-void Init_rcin_port(){
-	//Ch.1 BT0 TIOB00_0
-	FM3_GPIO->PFR4_f.P9 = 1; //P49をPWM入力
-	FM3_GPIO->EPFR04_f.TIOB0S0 = 0; //TIOB00_0
-	FM3_GPIO->EPFR04_f.TIOB0S1 = 0;
+static void Init_rcin_port(uint8_t ch){
 	
-	//Ch.2 BT1 TIOB01_0
-	FM3_GPIO->PFR3_f.P1 = 1; //P31をPWM入力
-	FM3_GPIO->EPFR04_f.TIOB1S0 = 0; //TIOB01_0
-	FM3_GPIO->EPFR04_f.TIOB1S1 = 1;
-	
-	//Ch.3 BT2 TIOB02_1
-	FM3_GPIO->PFR3_f.P2 = 1; //P32をPWM入力
-	FM3_GPIO->EPFR04_f.TIOB2S0 = 0; //TIOB02_1
-	FM3_GPIO->EPFR04_f.TIOB2S1 = 1;
-	
-	//Ch.4 BT3 TIOB03_1
-	FM3_GPIO->PFR3_f.P3 = 1; //P33をPWM入力
-	FM3_GPIO->EPFR04_f.TIOB3S0 = 0; //TIOB03_1
-	FM3_GPIO->EPFR04_f.TIOB3S1 = 1;
+	switch(ch){
+		case 0:
+		//Ch.1 BT0 TIOB00_0
+		FM3_GPIO->PFR4_f.P9 = 1; //P49をPWM入力
+		FM3_GPIO->EPFR04_f.TIOB0S0 = 0; //TIOB00_0
+		FM3_GPIO->EPFR04_f.TIOB0S1 = 0;
+		break;
+		
+		case 1:
+		//Ch.2 BT1 TIOB01_0
+		FM3_GPIO->PFR3_f.P1 = 1; //P31をPWM入力
+		FM3_GPIO->EPFR04_f.TIOB1S0 = 0; //TIOB01_0
+		FM3_GPIO->EPFR04_f.TIOB1S1 = 1;
+		break;
+		
+		case 2:
+		//Ch.3 BT2 TIOB02_1
+		FM3_GPIO->PFR3_f.P2 = 1; //P32をPWM入力
+		FM3_GPIO->EPFR04_f.TIOB2S0 = 0; //TIOB02_1
+		FM3_GPIO->EPFR04_f.TIOB2S1 = 1;
+		break;
+		
+		case 3:
+		//Ch.4 BT3 TIOB03_1
+		FM3_GPIO->PFR3_f.P3 = 1; //P33をPWM入力
+		FM3_GPIO->EPFR04_f.TIOB3S0 = 0; //TIOB03_1
+		FM3_GPIO->EPFR04_f.TIOB3S1 = 1;
+		break;
+	}
 }
 
 //PWM出力ポート設定
-void Init_rcout_port(){
-	//Ch.1 BT8 TIOA08_0
-	FM3_GPIO->PFRA_f.P0 = 1; //PA0をPWM出力
-	FM3_GPIO->EPFR12_f.TIOA8E0 = 1; //TIOA08_0
-	FM3_GPIO->EPFR12_f.TIOA8E1 = 0;
+static void Init_rcout_port(uint8_t ch){
 	
-	//Ch.2 BT9 TIOA09_0
-	FM3_GPIO->PFRA_f.P1 = 1; //PA1をPWM出力
-	FM3_GPIO->EPFR12_f.TIOA9E0 = 1; //TIOA09_0
-	FM3_GPIO->EPFR12_f.TIOA9E1 = 0;
-	
-	//Ch.3 BT10 TIOA10_0
-	FM3_GPIO->PFRB_f.P2 = 1; //PB2をPWM出力
-	FM3_GPIO->EPFR12_f.TIOA10E0 = 0; //TIOA10_1
-	FM3_GPIO->EPFR12_f.TIOA10E1 = 1;
-	
-	//Ch.4 BT11 TIOA11_0
-	FM3_GPIO->PFRA_f.P3 = 1; //PA3をPWM出力
-	FM3_GPIO->EPFR12_f.TIOA11E0 = 0; //TIOA11_0
-	FM3_GPIO->EPFR12_f.TIOA11E1 = 0;
-	
+	switch(ch){
+		case 0:
+		//Ch.1 BT8 TIOA08_0
+		FM3_GPIO->PFRA_f.P0 = 1; //PA0をPWM出力
+		FM3_GPIO->EPFR12_f.TIOA8E0 = 1; //TIOA08_0
+		FM3_GPIO->EPFR12_f.TIOA8E1 = 0;
+		break;
+		
+		case 1:
+		//Ch.2 BT9 TIOA09_0
+		FM3_GPIO->PFRA_f.P1 = 1; //PA1をPWM出力
+		FM3_GPIO->EPFR12_f.TIOA9E0 = 1; //TIOA09_0
+		FM3_GPIO->EPFR12_f.TIOA9E1 = 0;
+		break;
+		
+		case 2:
+		//Ch.3 BT10 TIOA10_0
+		FM3_GPIO->PFRB_f.P2 = 1; //PB2をPWM出力
+		FM3_GPIO->EPFR12_f.TIOA10E0 = 0; //TIOA10_1
+		FM3_GPIO->EPFR12_f.TIOA10E1 = 1;
+		break;
+		
+		case 3:
+		//Ch.4 BT11 TIOA11_0
+		FM3_GPIO->PFRA_f.P3 = 1; //PA3をPWM出力
+		FM3_GPIO->EPFR12_f.TIOA11E0 = 0; //TIOA11_0
+		FM3_GPIO->EPFR12_f.TIOA11E1 = 0;
+		break;
+	}
 }
 
 
-void Init_rcin(FM3_BT_PWC_TypeDef *rcin){
-	//タイマ設定
+void rcin_enable(uint8_t ch){
+	FM3_BT_PWC_TypeDef *rcin;
+	uint8_t in = ch;
+	if(in >= MAX_CH) in = MAX_CH - 1;
+	
+	rcin = rcin_list[in];
+	
+	//Port setting
+	Init_rcin_port(in);	
+	
+	//Timer setting
 	rcin->TMCR_f.CTEN = 0; //カウンタ停止
 	rcin->TMCR_f.FMD = 0x04; //16bitPWCタイマ選択
 	rcin->TMCR_f.T32 = 0;
@@ -76,7 +112,14 @@ void Init_rcin(FM3_BT_PWC_TypeDef *rcin){
 	
 }	
 
-void Init_rcout(FM3_BT_PWM_TypeDef *rcout){
+void rcout_enable(uint8_t ch){
+	FM3_BT_PWM_TypeDef *rcout;
+	uint8_t out = ch;
+	if(out >= MAX_CH) out = MAX_CH - 1;
+	
+	rcout = rcout_list[out];
+	
+	Init_rcout_port(out);
 	
 	rcout->TMCR_f.CTEN = 0; //カウンタ停止
   rcout->TMCR_f.STRG = 0; //ソフトウェアトリガ無効
@@ -115,24 +158,25 @@ void Init_rcout(FM3_BT_PWM_TypeDef *rcout){
 void rc_write(uint8_t ch, uint16_t pulse_usec){
 	uint16_t pulse = pulse_usec;
 	uint16_t duty;
+	uint8_t out = ch;
 	
 	if(pulse > PWM_MAX_PULSE_WIDTH) pulse =  PWM_MAX_PULSE_WIDTH;
 	if(pulse < PWM_MIN_PULSE_WIDTH) pulse =  PWM_MIN_PULSE_WIDTH;
 	
-	if(ch > 8) ch = 8;
+	if(out >= MAX_CH) out = MAX_CH - 1;
 	
 	//PWM出力はパルスのOFF幅指定
 	duty = pwm_period - (uint16_t)(pulse * (INTERRUPT_FREQ / 1000000.f));
 	
-	rc_out[ch - 1] = duty;
+	rc_out[ch] = duty;
 }
 
 uint16_t rc_read(uint8_t ch){
-	return rc_in[ch - 1];
+	return rc_in[ch];
 }
 
 uint16_t rcout_read(uint8_t ch){
-	return (uint16_t)((pwm_period - rc_out[ch -1]) / (INTERRUPT_FREQ / 1000000.f));
+	return (uint16_t)((pwm_period - rc_out[ch]) / (INTERRUPT_FREQ / 1000000.f));
 }
 
 void rc_multiread(uint16_t *data){
