@@ -35,6 +35,7 @@ typedef struct{
 typedef struct{
 	uint16_t input[8];
 	uint16_t output[8];
+	uint16_t trim[8];
 } radio;
 
 typedef struct{

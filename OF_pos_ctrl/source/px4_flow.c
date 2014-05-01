@@ -52,7 +52,6 @@ void calc_flow(){
 	flow->y += (flow->flow_comp_m_y / 1000.f) * 0.02f;
 	
 	
-	/*
 	r.b[0] = data[12];
 	r.b[1] = data[13];
 	flow->gyro_x_rate = (int16_t)r.i;
@@ -62,8 +61,7 @@ void calc_flow(){
 	r.b[0] = data[16];
 	r.b[1] = data[17];
 	flow->gyro_z_rate = (int16_t)r.i;
-	*/
-	
+		
 	r.b[0] = data[20];
 	r.b[1] = data[21];
 	flow->ground_distance = (int16_t)r.i;

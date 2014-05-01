@@ -20,6 +20,7 @@
 #define	SET_I						'i'
 #define	SET_D						'd'
 #define	SAVE						's'
+#define	RESTORE			'r'
 #define  EXIT							'e'
 
 
