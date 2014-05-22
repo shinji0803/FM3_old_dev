@@ -19,6 +19,7 @@
 #define	SET_P						'p'
 #define	SET_I						'i'
 #define	SET_D						'd'
+#define  SET_Q_TH			'q'
 #define	SAVE						's'
 #define	RESTORE			'r'
 #define  EXIT							'e'

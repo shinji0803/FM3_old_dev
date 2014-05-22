@@ -21,7 +21,7 @@ void loop_200hz(void);
 
 static void read_trim(radio *r);
 static void read_radio(radio *r);
-static void load_param(gain *g);
+static void load_param(gain *g, flow_data *f);
 static void calc_flow_ctrl( flow_data *f, gain *g, radio *r);
 static uint8_t check_radio_input(radio *r);
 
@@ -50,7 +50,7 @@ int32_t main(void){
 	Init_fram();
 	Init_DT();
 	
-	load_param(&f_gain);	
+	load_param(&f_gain, &px4f);	
 	read_trim(&rc);
 	px4f_init(&px4f);
 	init_cli(&px4f, &f_gain, &rc);
@@ -86,12 +86,15 @@ int32_t main(void){
 	}
 }
 
-static void load_param(gain *g){
+static void load_param(gain *g, flow_data *f){
 	gain *temp = g;
+	flow_data *temp1 = f;
 	//Load parameter
 	temp->p_gain = read_float(P_ADD);
 	temp->i_gain = read_float(I_ADD);
 	temp->d_gain = read_float(D_ADD);
+	
+	temp1->qual_th = read_uint16(Q_TH_ADD);
 	uart0_printf("Parameters Load Complete\r\n");
 }
 
@@ -105,32 +108,37 @@ static void read_radio(radio *r){
 	}
 }
 
+#define TRIM_LOW 1400
+#define TRIM_HIGH 1600
 static void read_trim(radio *r){
 	uint8_t count = 0;
-	uint16_t data[2];
+	uint16_t data[2] = { 0, 0};
 	
 	uart0_printf("Reading Radio Trim. Don't move sticks.\r\n");
 	uart0_printf("Reading");
 
 	while(count < 5){
-		data[0] = rc_read(0);
-		data[1] = rc_read(1);
+		data[0] += rc_read(0);
+		data[1] += rc_read(1);
 		uart0_printf(".");
 		wait(300);
 		count ++;
 	}
 	uart0_printf("\r\n");
 	
-	r->trim[0] = data[0];
-	r->trim[1] = data[1];
-	uart0_printf("CH1 Trim: %d, CH2 Trim: %d\r\n", r->trim[0], r->trim[1]);
+	r->trim[0] = data[0] / 5;
+	r->trim[1] = data[1] / 5;
+	if((r->trim[0] < TRIM_LOW || r->trim[0] > TRIM_HIGH) || (r->trim[1] < TRIM_LOW || r->trim[1] > TRIM_HIGH)){
+		uart0_printf("Invalid Trim Value... CH1: %d, CH2: %d\r\n", r->trim[0], r->trim[1]);
+		uart0_printf("Please Reset!!\r\n");
+		while(1){};
+	}
+	else uart0_printf("CH1 Trim: %d, CH2 Trim: %d\r\n", r->trim[0], r->trim[1]);
 }	
 	
 
 #define RADIO_TRIM 1520
 #define DZ 5
-#define QUAL_TH 100
-
 static void calc_flow_ctrl( flow_data *f, gain *g, radio *r){
 	float error, rate_error;
 	int16_t ctrl_value[2];
@@ -146,10 +154,10 @@ static void calc_flow_ctrl( flow_data *f, gain *g, radio *r){
 	ctrl_value[1] = (int16_t)((g->p_gain * error) - (g->i_gain * f->y) - (g->d_gain * rate_error));
 	old_error[1] = error;
 	
-	if(check_radio_input(r) == 0 && r->input[2] > RADIO_TRIM && f->qual > QUAL_TH){
+	if(check_radio_input(r) == 0 && r->input[2] > RADIO_TRIM && f->qual > f->qual_th){
 		FM3_GPIO->PDORA_f.P3 = 1; //test led on
 		rc_write( 0, r->trim[0] + ctrl_value[0]);
-		rc_write( 1, r->trim[1] -	ctrl_value[1]);
+		rc_write( 1, r->trim[1] + ctrl_value[1]);
 	}
 	else{
 		FM3_GPIO->PDORA_f.P3 = 0; //test led off

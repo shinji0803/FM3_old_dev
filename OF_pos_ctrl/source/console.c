@@ -13,7 +13,7 @@ void init_cli(flow_data *f, gain *g, radio *r){
 
 void top_menu(){
 	uart0_printf("---------------------------\r\n");
-	uart0_printf("-- Test Console ver1.2 ---\r\n");
+	uart0_printf("-- Test Console ver1.3 ---\r\n");
 	uart0_printf("---------------------------\r\n");
 	uart0_printf("r: read radio\r\n");
 	uart0_printf("f: read flow\r\n");
@@ -28,6 +28,7 @@ void gain_menu(){
 	uart0_printf("p: set p_gain\r\n");
 	uart0_printf("i: set i_gain\r\n");
 	uart0_printf("d: set d_gain\r\n");
+	uart0_printf("q: set valid OF quality threshold\r\n");
 	uart0_printf("s: save all gain setting\r\n");
 	uart0_printf("r: restore parameters\r\n");
 	uart0_printf("e: return top menu\r\n");
@@ -91,10 +92,17 @@ void gain_menu_branch(uint8_t com_type){
 			c_gain->d_gain = uart0_get_float_input();
 			break;
 		
+		case SET_Q_TH:
+			uart0_printf("OF quality threshold is %d, input new value. (range: 0~255)\r\n", c_flow->qual_th);
+			c_flow->qual_th = (uint16_t)uart0_get_float_input();
+			if(c_flow->qual_th > 255) c_flow->qual_th = 255;
+			break;
+		
 		case SAVE:
 			write_float(P_ADD, c_gain->p_gain);
 			write_float(I_ADD, c_gain->i_gain);
 			write_float(D_ADD, c_gain->d_gain);
+			write_uint16(Q_TH_ADD, c_flow->qual_th);
 			uart0_printf("Saved!\r\n");
 			break;
 		

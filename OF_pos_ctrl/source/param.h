@@ -31,6 +31,8 @@ typedef struct{
 #define P_ADD 0
 #define I_ADD 4
 #define D_ADD 8
+//qual_th address
+#define Q_TH_ADD 12
 
 typedef struct{
 	uint16_t input[8];
@@ -52,6 +54,7 @@ typedef struct{
 	uint8_t sonar_timestamp;// timestep in milliseconds between I2C frames
 	int16_t ground_distance;// Ground distance in meters*1000. Positive value: distance known. Negative value: Unknown distance
 	
+	uint16_t qual_th; // Valid threshold optical flow quality
 	float x;
 	float y;
 } flow_data;
