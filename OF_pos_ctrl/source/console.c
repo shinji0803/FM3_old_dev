@@ -13,7 +13,7 @@ void init_cli(flow_data *f, gain *g, radio *r){
 
 void top_menu(){
 	uart0_printf("---------------------------\r\n");
-	uart0_printf("-- Test Console ver1.3 ---\r\n");
+	uart0_printf("-- Test Console ver1.4 ---\r\n");
 	uart0_printf("---------------------------\r\n");
 	uart0_printf("r: read radio\r\n");
 	uart0_printf("f: read flow\r\n");
