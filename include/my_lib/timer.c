@@ -81,17 +81,20 @@ uint32_t get_millis(){
 }
 
 void wait_usec(uint32_t length){
+	uint32_t dummy_count = 0;
 	uint32_t now = usec;
-	while(usec <= (now + length));	
+	while(usec <= (now + length)){
+		dummy_count ++;
+	}		
 	
 	return;
 }
 
 void wait(uint32_t length){
-	uint32_t a = 0;
+	uint32_t dummy_count = 0;
 	uint32_t now = get_millis();
 	while(get_millis() <= (now + length)){
-		a++;
+		dummy_count ++;
 	}
 	
 	return;
