@@ -167,7 +167,7 @@ int32_t read_int32(uint16_t address){
 	uint8_t data_rx[4];
 	generic_32bit r;
 	
-	read_multibyte(address, 8, data_rx);
+	read_multibyte(address, 4, data_rx);
 	r.b[0] = data_rx[0];
 	r.b[1] = data_rx[1];
 	r.b[2] = data_rx[2];
@@ -179,7 +179,7 @@ uint32_t read_uint32(uint16_t address){
 	uint8_t data_rx[4];
 	generic_32bit r;
 	
-	read_multibyte(address, 8, data_rx);
+	read_multibyte(address, 4, data_rx);
 	r.b[0] = data_rx[0];
 	r.b[1] = data_rx[1];
 	r.b[2] = data_rx[2];
@@ -191,7 +191,7 @@ float read_float(uint16_t address){
 	uint8_t data_rx[4];
 	generic_32bit r;
 	
-	read_multibyte(address, 8, data_rx);
+	read_multibyte(address, 4, data_rx);
 	r.b[0] = data_rx[0];
 	r.b[1] = data_rx[1];
 	r.b[2] = data_rx[2];
